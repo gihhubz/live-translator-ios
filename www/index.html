@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>AI Live Translator</title>
+    <style>
+        :root { --primary: #007AFF; --bg: #F2F2F7; --card: #FFFFFF; --text: #000000; --subtext: #8E8E93; --border: #E5E5EA; --danger: #FF3B30; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text); padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom) 16px; min-height: 100vh; display: flex; flex-direction: column; }
+        header { padding: 16px 0 12px 0; text-align: center; }
+        header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+        header p { font-size: 13px; color: var(--subtext); margin-top: 2px; }
+        .controls { display: flex; align-items: center; gap: 8px; background: var(--card); padding: 8px; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 12px; }
+        select { flex: 1; padding: 10px 8px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: var(--primary); outline: none; text-align: center; }
+        .swap-btn { background: var(--bg); border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 18px; color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .translation-area { display: flex; flex-direction: column; gap: 12px; flex: 1; padding-bottom: 16px; }
+        .box { background: var(--card); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; flex: 1; min-height: 180px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .box.output-box { background: #EBF5FF; }
+        textarea { flex: 1; border: none; resize: none; font-size: 18px; line-height: 1.4; outline: none; background: transparent; color: var(--text); }
+        .box-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.06); margin-top: 8px; }
+        .action-btns { display: flex; gap: 8px; }
+        .icon-btn { background: rgba(0,122,255,0.1); border: none; border-radius: 10px; padding: 8px 12px; font-size: 14px; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 4px; }
+        .icon-btn.recording { background: var(--danger); color: white; animation: pulse 1.5s infinite; }
+        .status { font-size: 12px; color: var(--subtext); }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
+    </style>
+</head>
+<body>
+    <header><h1>Live Translator</h1><p>Dịch trực tiếp giọng nói &amp; văn bản</p></header>
+    <div class="controls"><select id="sourceLang"></select><button class="swap-btn" id="swapBtn">⇄</button><select id="targetLang"></select></div>
+    <div class="translation-area">
+        <div class="box"><textarea id="sourceText" placeholder="Nhập văn bản hoặc bấm Nói..."></textarea><div class="box-footer"><div class="action-btns"><button class="icon-btn" id="micBtn">🎤 Nói</button><button class="icon-btn" id="speakSourceBtn">🔊 Nghe</button><button class="icon-btn" id="clearBtn">✕</button></div><span class="status" id="micStatus">Sẵn sàng</span></div></div>
+        <div class="box output-box"><textarea id="targetText" placeholder="Bản dịch trực tiếp..." readonly></textarea><div class="box-footer"><div class="action-btns"><button class="icon-btn" id="speakTargetBtn">🔊 Đọc</button><button class="icon-btn" id="copyBtn">📋 Chép</button></div><span class="status" id="translateStatus"></span></div></div>
+    </div>
+    <script src="bundle.js" defer></script>
+</body>
+</html>
