@@ -1,0 +1,48 @@
+name: Build Unsigned iOS IPA
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies & bundle web code
+        run: |
+          npm install
+          npm run build
+      - name: Install Capacitor & Generate iOS Project
+        run: |
+          npx cap add ios
+          npx cap sync ios
+      - name: Add Microphone & Speech Recognition Permissions to Info.plist
+        run: |
+          /usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string 'Ứng dụng cần quyền Micro để nhận diện giọng nói và dịch trực tiếp.'" ios/App/App/Info.plist
+          /usr/libexec/PlistBuddy -c "Add :NSSpeechRecognitionUsageDescription string 'Ứng dụng cần quyền nhận diện giọng nói để chuyển lời nói thành văn bản.'" ios/App/App/Info.plist
+      - name: Build Unsigned Xcode Archive
+        run: |
+          cd ios/App
+          xcodebuild -project App.xcodeproj \
+            -scheme App \
+            -sdk iphoneos \
+            -configuration Release \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+      - name: Package into .IPA file
+        run: |
+          mkdir -p Payload
+          cp -r ios/App/build/Release-iphoneos/App.app Payload/
+          zip -r LiveTranslator.ipa Payload
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiveTranslator-IPA
+          path: LiveTranslator.ipa
